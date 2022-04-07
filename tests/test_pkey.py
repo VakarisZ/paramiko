@@ -44,7 +44,7 @@ from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateNumbers
 from mock import patch, Mock
 import pytest
 
-from .util import _support, is_low_entropy
+from .util import _support, is_low_entropy, requires_sha1_signing
 
 
 # from openssh's ssh-keygen
@@ -256,6 +256,7 @@ class KeyTest(unittest.TestCase):
         pub = RSAKey(data=key.asbytes())
         self.assertTrue(pub.verify_ssh_sig(b"ice weasels", msg))
 
+    @requires_sha1_signing
     def test_sign_and_verify_ssh_rsa(self):
         self._sign_and_verify_rsa("ssh-rsa", SIGNED_RSA)
 
@@ -280,6 +281,7 @@ class KeyTest(unittest.TestCase):
         pub = DSSKey(data=key.asbytes())
         self.assertTrue(pub.verify_ssh_sig(b"ice weasels", msg))
 
+    @requires_sha1_signing
     def test_generate_rsa(self):
         key = RSAKey.generate(1024)
         msg = key.sign_ssh_data(b"jerri blank")
